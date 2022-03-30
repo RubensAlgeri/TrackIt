@@ -8,8 +8,12 @@ import logo from "../img/Logo.png"
 export default function TelaCadastro(){
     const [cadastro, setCadastro] = useState({email: "", password:"", name:"", image:""})
     const {email, password, name, image} = cadastro;
-    function cadastrar(){
-        const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", cadastro)
+
+    function cadastrar(event){
+        event.preventDefault();
+        const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", {email, password, name, image});
+        promessa.then(()=>{console.log("deu certo")});
+        promessa.catch((err)=>{console.log("deu ruim", err.message, err.response.data.message)});
     }
 
     console.log(cadastro)

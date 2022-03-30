@@ -11,13 +11,18 @@ export default function TelaLogin(){
     const {email, password} = login;
 
 
-    function logar(){
-        const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", login)
+    function logar(event){
+        event.preventDefault();
+        const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", {email, password})
         promessa.then(resposta=>{
+            console.log("deu bom", resposta.data)
             setToken(resposta.data.token)
         })
+        promessa.catch(err=>{
+            console.log('deu ruim', err.message)
+        })
     }
-    console.log(login)
+    console.log(token)
     return(
         <Login>
             <img src={logo} alt="Logo"/>
