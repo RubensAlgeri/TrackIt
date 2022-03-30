@@ -2,16 +2,28 @@ import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "../img/Logo.png"
 
 export default function TelaLogin(){
+    const [login, setLogin] = useState({email: "", password:""})
+    const [token, setToken] = useState('')
+    const {email, password} = login;
+
+
+    function logar(){
+        const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", login)
+        promessa.then(resposta=>{
+            setToken(resposta.data.token)
+        })
+    }
+    console.log(login)
     return(
         <Login>
             <img src={logo} alt="Logo"/>
-            <form>
-                <input type="email" placeholder="email" required></input>
-                <input type="password" placeholder="senha" required></input>
+            <form onSubmit={logar}>
+                <input type="email" placeholder="email" value={login.email} onChange={(e)=>setLogin({email:e.target.value, password})} required></input>
+                <input type="password" placeholder="senha" value={login.password} onChange={(e)=>setLogin({password:e.target.value, email})} required></input>
                 <button type="submit">Entrar</button>
             </form>
             <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
@@ -24,16 +36,23 @@ display: flex;
 flex-wrap: wrap;
 justify-content: center;
 align-items: center;
-width: 100vw;
+width: auto;
 height: 100vh;
+form{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: auto;
+}
 img{
+    margin-top: 68px;
     width: 180px;
     height: 178.38px;
 }
 input{
     width: 303px;
     height: 45px;
-    margin: 0 700px;
+    margin: 0 500px;
     margin-bottom: 6px;
     background: #FFFFFF;
     border: 1px solid #D5D5D5;
@@ -47,7 +66,7 @@ input::placeholder{
     color: #DBDBDB;
 }
 button{
-    margin: 0 700px;
+    margin: 0 500px;
     width: 303px;
     height: 45px;
     background: #52B6FF;
