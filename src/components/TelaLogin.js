@@ -2,13 +2,14 @@ import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../img/Logo.png"
 
 export default function TelaLogin(){
     const [login, setLogin] = useState({email: "", password:""})
-    const [token, setToken] = useState('')
     const {email, password} = login;
+
+    const navigate = useNavigate();
 
 
     function logar(event){
@@ -16,13 +17,15 @@ export default function TelaLogin(){
         const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", {email, password})
         promessa.then(resposta=>{
             console.log("deu bom", resposta.data)
-            setToken(resposta.data.token)
+            navigate("/habitos",{
+                state:{data: resposta.data, token: resposta.data.token},
+            })
         })
         promessa.catch(err=>{
             console.log('deu ruim', err.message)
         })
     }
-    console.log(token)
+
     return(
         <Login>
             <img src={logo} alt="Logo"/>
@@ -47,7 +50,7 @@ form{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    width: auto;
+    margin: 0 500px;
 }
 img{
     margin-top: 68px;
@@ -57,7 +60,6 @@ img{
 input{
     width: 303px;
     height: 45px;
-    margin: 0 500px;
     margin-bottom: 6px;
     background: #FFFFFF;
     border: 1px solid #D5D5D5;
@@ -71,7 +73,6 @@ input::placeholder{
     color: #DBDBDB;
 }
 button{
-    margin: 0 500px;
     width: 303px;
     height: 45px;
     background: #52B6FF;

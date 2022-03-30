@@ -2,21 +2,22 @@ import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../img/Logo.png"
 
 export default function TelaCadastro(){
     const [cadastro, setCadastro] = useState({email: "", password:"", name:"", image:""})
     const {email, password, name, image} = cadastro;
 
+    const navigate = useNavigate();
+
     function cadastrar(event){
         event.preventDefault();
         const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", {email, password, name, image});
-        promessa.then(()=>{console.log("deu certo")});
+        promessa.then(()=>{navigate("/")});
         promessa.catch((err)=>{console.log("deu ruim", err.message, err.response.data.message)});
     }
 
-    console.log(cadastro)
     return(
             <Cadastro>
                 <img src={logo} alt="Logo"/>
@@ -49,12 +50,11 @@ const Cadastro = styled.div`
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    width: auto;
+    margin: 0 500px;
     }
     input{
         width: 303px;
         height: 45px;
-        margin: 0 700px;
         margin-bottom: 6px;
         background: #FFFFFF;
         border: 1px solid #D5D5D5;
@@ -68,7 +68,6 @@ const Cadastro = styled.div`
         color: #DBDBDB;
     }
     button{
-        margin: 0 700px;
         width: 303px;
         height: 45px;
         background: #52B6FF;
