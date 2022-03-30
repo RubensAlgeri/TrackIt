@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from 'react';
 
-import Reset from "../Reset";
+import Reset from "../themes/Reset";
+import Style from "../themes/Style"
 
 
 import TelaCadastro from "./TelaCadastro"
@@ -13,8 +14,10 @@ import TelaHistorico from "./TelaHistorico"
 
 export default function App(){
     return(
-		<BrowserRouter>
+        <>
 		<Reset />
+        <Style />
+        <BrowserRouter>
 			<Routes>
 				<Route path="/" element={<TelaLogin />} />
 				<Route path="/cadastro" element={<TelaCadastro />} />
@@ -23,5 +26,6 @@ export default function App(){
 				<Route path="/historico" element={<TelaHistorico />} />
 			</Routes>
 		</BrowserRouter>
+        </>
     );
 }
