@@ -2,7 +2,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Rodape from './Rodape';
 
 export default function Topo(props){
@@ -15,6 +15,7 @@ export default function Topo(props){
     )
 }
 const NomeApp = styled.div`
+z-index: 2;
 position: fixed;
 top: 0;
 width: 100vw;

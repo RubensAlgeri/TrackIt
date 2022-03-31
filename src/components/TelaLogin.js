@@ -1,6 +1,7 @@
 import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
+import {ThreeDots} from "react-loader-spinner"
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../img/Logo.png"
@@ -8,21 +9,24 @@ import logo from "../img/Logo.png"
 export default function TelaLogin(){
     const [login, setLogin] = useState({email: "", password:""})
     const {email, password} = login;
+    const [carregando, setCarregando] = useState(false)
 
     const navigate = useNavigate();
 
 
     function logar(event){
+        setCarregando(true);
         event.preventDefault();
         const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", {email, password})
         promessa.then(resposta=>{
-            console.log("deu bom", resposta.data)
+            setCarregando(false)
             navigate("/habitos",{
                 state:{data: resposta.data, token: resposta.data.token},
             })
         })
         promessa.catch(err=>{
             console.log('deu ruim', err.message)
+            setCarregando(false)
         })
     }
 
@@ -30,9 +34,19 @@ export default function TelaLogin(){
         <Login>
             <img src={logo} alt="Logo"/>
             <form onSubmit={logar}>
-                <input type="email" placeholder="email" value={login.email} onChange={(e)=>setLogin({email:e.target.value, password})} required></input>
-                <input type="password" placeholder="senha" value={login.password} onChange={(e)=>setLogin({password:e.target.value, email})} required></input>
-                <button type="submit">Entrar</button>
+                {carregando ?
+                    <>
+                        <input disabled type="email" placeholder="email" value={login.email} onChange={(e)=>setLogin({email:e.target.value, password})} required></input>
+                        <input disabled type="password" placeholder="senha" value={login.password} onChange={(e)=>setLogin({password:e.target.value, email})} required></input>
+                        <button disabled><ThreeDots color="#FFFFFF" height={13} width={51}/></button>
+                    </>
+                    :
+                    <>
+                        <input type="email" placeholder="email" value={login.email} onChange={(e)=>setLogin({email:e.target.value, password})} required></input>
+                        <input type="password" placeholder="senha" value={login.password} onChange={(e)=>setLogin({password:e.target.value, email})} required></input>
+                        <button type="submit">Entrar</button>
+                    </>
+                }
             </form>
             <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
 
@@ -72,7 +86,13 @@ input::placeholder{
 
     color: #DBDBDB;
 }
+input:disabled{
+    background: #F2F2F2;
+}
 button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 303px;
     height: 45px;
     background: #52B6FF;
@@ -83,5 +103,8 @@ button{
     text-align: center;
 
     color: #FFFFFF;
+}
+button:disabled{
+    opacity: 0.7;
 }
 `
