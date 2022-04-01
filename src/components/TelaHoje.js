@@ -22,7 +22,6 @@ export default function TelaHoje() {
 
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
     const [habitosCompletos, setHabitosCompletos] = useState(0)
-    // const [porcentagem, setPorcentagem] = useState(habitosCompletos / listaHabitosHoje.length * 100)
 
     setPorcentagem(Math.round(habitosCompletos / listaHabitosHoje.length * 100))
 
@@ -113,12 +112,12 @@ display: flex;
 flex-wrap: wrap;
 align-items: center;
 width: calc(34000%/375);
-min-width: 340px;
+min-width: 280px;
 max-width: 500px;
 height: 94px;
 background-color: #FFFFFF;
 border-radius: 5px;
-margin: 0 18px 10px 18px;
+margin: 20px 18px 10px 18px;
 h4{
     position: absolute;
     left:15px;

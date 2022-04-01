@@ -202,7 +202,7 @@ flex-wrap: wrap;
 align-items: center;
 margin: 20px 18px 10px 18px;
 width: calc(34000%/375);
-min-width: 340px;
+min-width: 280px;
 max-width: 500px;
 height: 180px;
 background: #FFFFFF;
@@ -216,7 +216,7 @@ form{
 }
 form input{
     margin-bottom: 10px;
-    width: 303px;
+    width: calc(30300%/375);
     height: 45px;
     background: #FFFFFF;
     border: 1px solid #D5D5D5;
@@ -277,7 +277,7 @@ display: flex;
 flex-wrap: wrap;
 align-items: center;
 width: calc(34000%/375);
-min-width: 340px;
+min-width: 280px;
 max-width: 500px;
 height: 94px;
 background-color: #FFFFFF;
