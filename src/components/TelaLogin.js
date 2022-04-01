@@ -31,7 +31,6 @@ export default function TelaLogin(){
             
         })
         promessa.catch(err=>{
-            console.log('deu ruim', err.message)
             setCarregando(false)
         })
     }
@@ -103,6 +102,7 @@ button{
     height: 45px;
     background: #52B6FF;
     border-radius: 4.63636px;
+    border: none;
 
     font-size: 20.976px;
     line-height: 26px;

@@ -45,6 +45,10 @@ export default function TelaHabitos() {
         promessa.then(() => {
             const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
             promise.then((resposta) => {
+                setCriarHabito(false)
+                setDias([])
+                setNomeHabito("")
+                setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
                 setListaHabitos(resposta.data);
             })
             promise.catch(() => { alert('Erro, tente novamente mais tarde') })
@@ -76,6 +80,12 @@ export default function TelaHabitos() {
             promise.catch(() => { alert('Erro, tente novamente mais tarde') })
         })
     }
+    function cancelar(){
+        setCriarHabito(false)
+        setDias([])
+        setNomeHabito("")
+        setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
+    }
 
     return (
         <>
@@ -97,7 +107,7 @@ export default function TelaHabitos() {
                                         )
                                     })}
                                 </div>
-                                <span onClick={() => setCriarHabito(false)}>Cancelar</span>
+                                <span onClick={cancelar}>Cancelar</span>
                                 <button type="submit">Salvar</button>
                             </form>
                         </Criacao>

@@ -11,15 +11,13 @@ import Rodape from "./Rodape";
 
 export default function TelaHoje() {
     const DataHoje = dayjs().locale('pt-br').format('dddd, DD/MM')[0].toUpperCase() + dayjs().locale('pt-br').format('dddd, DD/MM').slice(1).replace("-feira", "");
-    // const { state } = useLocation()
-    // console.log("habitos", state)
+
     const setUserData = useContext(UserContext).setUserData
     const userData = useContext(UserContext).userData
     const setPorcentagem = useContext(UserContext).setPorcentagem
     const porcentagem = useContext(UserContext).porcentagem
     const { data, token } = userData;
     const { image } = data;
-    console.log("token ", token)
 
 
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
@@ -53,7 +51,6 @@ export default function TelaHoje() {
             const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config)
             promessa.then(() => {
                 setHabitosCompletos(habitosCompletos - 1)
-                console.log("desmarca ", habitosCompletos)
                 const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today`, config)
                 promise.then((resposta) => {
                     setListaHabitosHoje(resposta.data);
@@ -63,14 +60,12 @@ export default function TelaHoje() {
 
             })
             promessa.catch(err => {
-                console.log("erro ", err.response)
                 alert(err.response.data.message)
             })
         } else {
             const promessas = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config)
             promessas.then(() => {
                 setHabitosCompletos(habitosCompletos + 1)
-                console.log("marca ", habitosCompletos)
                 const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today`, config)
                 promise.then((resposta) => {
                     setListaHabitosHoje(resposta.data);
@@ -79,7 +74,6 @@ export default function TelaHoje() {
                 promise.catch(() => { alert('Erro, tente novamente mais tarde') })
             })
             promessas.catch(err => {
-                console.log("erro ", err.response)
                 alert(err.response.data.message)
             })
         }
