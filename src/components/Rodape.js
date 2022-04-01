@@ -3,15 +3,16 @@ import styled from 'styled-components';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-export default function Rodape(){
-    const percentage = 66;
+export default function Rodape(props){
+    const {porcentagem} = props;
+
     return(
         <>
             <Footer>
                 <Link to="/habitos">Habitos</Link>
                 <div>
                     <Link to="/hoje">
-                        <CircularProgressbar value={percentage} text='Hoje' background={true} backgroundPadding={6}
+                        <CircularProgressbar value={porcentagem} text='Hoje' background={true} backgroundPadding={6}
                             styles={buildStyles({
 
                                 pathColor: `#fff`,

@@ -18,9 +18,12 @@ export default function TelaHoje(){
     const {image} = data;
     console.log("token ", token)
     
-
+    
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
-    const [habitosClompletos, setHabitosClompletos] = useState(0)
+    const [habitosCompletos, setHabitosCompletos] = useState(0)
+    
+    const percentage = habitosCompletos/listaHabitosHoje.length*100;
+
 
     useEffect(() => {
         setUserData(state)
@@ -32,35 +35,32 @@ export default function TelaHoje(){
         const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today`, config)
         promise.then((resposta) => {
             setListaHabitosHoje(resposta.data);
+            setHabitosCompletos(resposta.data.filter(habito=>{return habito.done}).length)
         })
-        promise.catch(()=>{alert('Erro, tente novamente mais tarde')})
+        promise.catch(() => { alert('Erro, tente novamente mais tarde') })
     }, []);
 
     function atualizarHabito(status, id){
-
-        if(status){
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
             }
-            const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, config)
-            promessa.then(resposta=>{
-
+        }
+        if(status){
+            const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`,{}, config)
+            promessa.then(()=>{
+                setHabitosCompletos(habitosCompletos-1)
+                console.log("desmarca ", habitosCompletos)
             })
             promessa.catch(err=>{
                 console.log("erro ",err.response)
                 alert(err.response.data.message)
             })
         }else{
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-            const promessas = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, config)
-            promessas.then(resposta=>{
-
+            const promessas = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`,{}, config)
+            promessas.then(()=>{
+                setHabitosCompletos(habitosCompletos+1)
+                console.log("marca ", habitosCompletos)
             })
             promessas.catch(err=>{
                 console.log("erro ", err.response)
@@ -72,11 +72,11 @@ export default function TelaHoje(){
     return(
         <>
         <Topo image={image}></Topo>
-        <Habitos props={habitosClompletos}>
+        <Habitos completos={percentage}>
             <div>
                 <p>{DataHoje}</p>
-                {habitosClompletos>0?
-                <em>67% dos hábitos concluídos</em>
+                {habitosCompletos>0?
+                <em>{percentage}% dos hábitos concluídos</em>
                 :
                 <em>Nenhum hábito concluído ainda</em>}
             </div>
@@ -93,7 +93,7 @@ export default function TelaHoje(){
             })
             :<em>Você não cadastrou nenhum hábito pra hoje. Adicione um hábito para começar a trackear!</em>}
         </Habitos>
-        <Rodape></Rodape>
+        <Rodape porcentagem={percentage}></Rodape>
         </>
     )
 }
@@ -173,7 +173,7 @@ div em{
     font-size: 17.976px;
     line-height: 22px;
 
-    color: ${(props)=>props.habitosClompletos>0?"#8FC549":"#BABABA"};
+    color: ${(props)=>props.completos>0?"#8FC549":"#BABABA"};
 }
 em{
     width: calc(33800%/375);
