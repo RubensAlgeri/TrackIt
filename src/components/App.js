@@ -4,7 +4,7 @@ import React from 'react';
 import Reset from "../themes/Reset";
 import Style from "../themes/Style"
 
-
+import UserContext from "../contexts/UserContext";
 import TelaCadastro from "./TelaCadastro"
 import TelaLogin from "./TelaLogin"
 import TelaHabitos from "./TelaHabitos"
@@ -13,19 +13,22 @@ import TelaHistorico from "./TelaHistorico"
 
 
 export default function App(){
+	const [userData, setUserData] = React.useState([])
     return(
         <>
 		<Reset />
         <Style />
-        <BrowserRouter>
-			<Routes>
-				<Route path="/" element={<TelaLogin />} />
-				<Route path="/cadastro" element={<TelaCadastro />} />
-				<Route path="/habitos" element={<TelaHabitos />} />
-				<Route path="/hoje" element={<TelaHoje />} />
-				<Route path="/historico" element={<TelaHistorico />} />
-			</Routes>
-		</BrowserRouter>
+			<BrowserRouter>
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<Routes>
+						<Route path="/" element={<TelaLogin />} />
+						<Route path="/cadastro" element={<TelaCadastro />} />
+						<Route path="/habitos" element={<TelaHabitos />} />
+						<Route path="/hoje" element={<TelaHoje />} />
+						<Route path="/historico" element={<TelaHistorico />} />
+					</Routes>
+				</UserContext.Provider>
+			</BrowserRouter>
         </>
     );
 }

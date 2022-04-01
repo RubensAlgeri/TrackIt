@@ -2,14 +2,18 @@ import axios from 'axios';
 import styled from 'styled-components';
 import React from 'react';
 import {ThreeDots} from "react-loader-spinner"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+
 import logo from "../img/Logo.png"
+import UserContext from '../contexts/UserContext';
 
 export default function TelaLogin(){
     const [login, setLogin] = useState({email: "", password:""})
     const {email, password} = login;
     const [carregando, setCarregando] = useState(false)
+    const setUserData = useContext(UserContext).setUserData
+    
 
     const navigate = useNavigate();
 
@@ -20,9 +24,11 @@ export default function TelaLogin(){
         const promessa = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", {email, password})
         promessa.then(resposta=>{
             setCarregando(false)
-            navigate("/habitos",{
+            setUserData({data: resposta.data, token: resposta.data.token})
+            navigate("/hoje",{
                 state:{data: resposta.data, token: resposta.data.token},
             })
+            
         })
         promessa.catch(err=>{
             console.log('deu ruim', err.message)
