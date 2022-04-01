@@ -16,6 +16,7 @@ export default function TelaHoje(){
     const setUserData = useContext(UserContext).setUserData
     const {data, token} = state;
     const {image} = data;
+    console.log("token ", token)
     
 
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
@@ -27,13 +28,46 @@ export default function TelaHoje(){
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }        
+        }
         const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today`, config)
         promise.then((resposta) => {
             setListaHabitosHoje(resposta.data);
         })
         promise.catch(()=>{alert('Erro, tente novamente mais tarde')})
     }, []);
+
+    function atualizarHabito(status, id){
+
+        if(status){
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, config)
+            promessa.then(resposta=>{
+
+            })
+            promessa.catch(err=>{
+                console.log("erro ",err.response)
+                alert(err.response.data.message)
+            })
+        }else{
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            const promessas = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, config)
+            promessas.then(resposta=>{
+
+            })
+            promessas.catch(err=>{
+                console.log("erro ", err.response)
+                alert(err.response.data.message)
+            })
+        }
+    }
 
     return(
         <>
@@ -49,11 +83,11 @@ export default function TelaHoje(){
             {listaHabitosHoje.length>0? 
             listaHabitosHoje.map(habito=>{
                 return(
-                    <HabitosCriados>
+                    <HabitosCriados sequencia={habito.currentSequence} recorde={habito.highestSequence} feito={habito.done}>
 
-                        <b>{habito.name}</b>
-                        <h6>Sequência atual: 3 dias <br/>Seu recorde: 5 dias</h6>
-                        <ion-icon name="checkbox"></ion-icon>
+                        <h4>{habito.name}</h4>
+                        <h6>Sequência atual: <b className='sequencia'>{habito.currentSequence} dias</b> <br/>Seu recorde: <b className='recorde'>{habito.highestSequence} dias</b></h6>
+                        <ion-icon onClick={()=>atualizarHabito(habito.done, habito.id)} name="checkbox"></ion-icon>
                     </HabitosCriados>
                 )
             })
@@ -75,7 +109,7 @@ height: 94px;
 background-color: #FFFFFF;
 border-radius: 5px;
 margin: 0 18px 10px 18px;
-b{
+h4{
     position: absolute;
     left:15px;
     top: 13px;
@@ -97,13 +131,18 @@ h6{
 
     color: #666666;
 }
+.sequencia{
+    color: ${props=>props.feito?"#8FC549":"#666666"};
+}
+.recorde{
+    color: ${props=>props.feito && props.sequencia==props.recorde?"#8FC549":"#666666"};
+}
 ion-icon{
     position: absolute;
     right:13px;
     top: 13px;
     font-size: 69px;
-    color: #EBEBEB;
-    color: #8FC549;
+    color: ${(props)=>props.feito?"#8FC549":'#EBEBEB'};
     border: #E7E7E7;
 }
 `
