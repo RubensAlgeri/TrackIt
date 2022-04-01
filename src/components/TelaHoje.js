@@ -10,7 +10,7 @@ import Topo from "./Topo"
 import Rodape from "./Rodape";
 
 export default function TelaHoje() {
-    const DataHoje = dayjs().locale('pt-br').format('dddd, DD/MM')[0].toUpperCase() + dayjs().locale('pt-br').format('dddd, DD/MM').slice(1);
+    const DataHoje = dayjs().locale('pt-br').format('dddd, DD/MM')[0].toUpperCase() + dayjs().locale('pt-br').format('dddd, DD/MM').slice(1).replace("-feira", "");
     const { state } = useLocation()
     console.log("habitos", state)
     const setUserData = useContext(UserContext).setUserData
@@ -21,8 +21,8 @@ export default function TelaHoje() {
 
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
     const [habitosCompletos, setHabitosCompletos] = useState(0)
+    const [porcentagem, setPorcentagem] = useState(habitosCompletos / listaHabitosHoje.length * 100)
 
-    const percentage = habitosCompletos / listaHabitosHoje.length * 100;
 
 
     useEffect(() => {
@@ -85,11 +85,11 @@ export default function TelaHoje() {
     return (
         <>
             <Topo image={image}></Topo>
-            <Habitos completos={percentage}>
+            <HabitosHoje completos={porcentagem}>
                 <div>
                     <p>{DataHoje}</p>
                     {habitosCompletos > 0 ?
-                        <em>{percentage}% dos hábitos concluídos</em>
+                        <em>{porcentagem}% dos hábitos concluídos</em>
                         :
                         <em>Nenhum hábito concluído ainda</em>}
                 </div>
@@ -105,8 +105,8 @@ export default function TelaHoje() {
                         )
                     })
                     : <em>Você não cadastrou nenhum hábito pra hoje. Adicione um hábito para começar a trackear!</em>}
-            </Habitos>
-            <Rodape porcentagem={percentage}></Rodape>
+            </HabitosHoje>
+            <Rodape porcentagem={porcentagem}></Rodape>
         </>
     )
 }
@@ -159,7 +159,7 @@ ion-icon{
     border: #E7E7E7;
 }
 `
-const Habitos = styled.div`
+const HabitosHoje = styled.div`
 width: 100vw;
 margin-top: 98px;
 display: flex;

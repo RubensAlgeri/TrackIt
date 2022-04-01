@@ -18,6 +18,7 @@ export default function TelaHabitos() {
     const [semana, setSemana] = useState([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
 
     const [criarHabito, setCriarHabito] = useState(false)
+    const [nomeHabito, setNomeHabito] = useState('')
     useEffect(() => {
         const config = {
             headers: {
@@ -33,6 +34,22 @@ export default function TelaHabitos() {
 
     function criarHabitos(event) {
         event.preventDefault();
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        if(dias.length>0){
+        const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, { name: nomeHabito, days: dias }, config)
+        promessa.then(() => {
+            const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
+            promise.then((resposta) => {
+                setListaHabitos(resposta.data);
+            })
+            promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+        })
+    }else{alert("Selecione ao menos um dia da semana para aplicar o hábito")}
     }
 
     function selecioneiDia(numero, selecionado) {
@@ -44,14 +61,22 @@ export default function TelaHabitos() {
         }
     }
 
-    function removerHabito(idHabito){
+    function removerHabito(idHabito) {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-        const promessa = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idHabito}`)
+        const promessa = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idHabito}`, config)
+        promessa.then(() => {
+            const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
+            promise.then((resposta) => {
+                setListaHabitos(resposta.data);
+            })
+            promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+        })
     }
+
     return (
         <>
             <Topo image={image}></Topo>
@@ -61,18 +86,18 @@ export default function TelaHabitos() {
                     <small onClick={() => setCriarHabito(true)}>+</small>
                     {criarHabito ?
                         <Criacao>
-                            <form >
-                                <input type='text' required></input>
+                            <form onSubmit={criarHabitos}>
+                                <input type='text' placeholder='nome do hábito' value={nomeHabito} onChange={(e) => setNomeHabito(e.target.value)} required></input>
                                 <div>
                                     {semana.map(dia => {
                                         return (
-                                            <Semana escolhido={dia.selecionado}>
+                                            <Semana selecionado={dia.selecionado}>
                                                 <h5 onClick={() => selecioneiDia(dia.numero, !dia.selecionado)}>{dia.dia}</h5>
                                             </Semana>
                                         )
                                     })}
                                 </div>
-                                <p onClick={() => setCriarHabito(false)}>Cancelar</p>
+                                <span onClick={() => setCriarHabito(false)}>Cancelar</span>
                                 <button type="submit">Salvar</button>
                             </form>
                         </Criacao>
@@ -86,16 +111,16 @@ export default function TelaHabitos() {
                             <Habito>
 
                                 <h4>{habito.name}</h4>
-                                <ion-icon onClick={()=>removerHabito(habito.id)} name="trash-outline"></ion-icon>
-                                <div>
+                                <ion-icon onClick={() => removerHabito(habito.id)} name="trash-outline"></ion-icon>
+                                <article>
                                     {semana.map(dia => {
                                         return (
-                                            <Semana escolhido={dia.selecionado}>
+                                            <Dia selecionado={habito.days.join(',').includes(dia.numero)}>
                                                 <h5>{dia.dia}</h5>
-                                            </Semana>
+                                            </Dia>
                                         )
                                     })}
-                                </div>
+                                </article>
                             </Habito>
                         )
                     })
@@ -105,6 +130,24 @@ export default function TelaHabitos() {
         </>
     )
 }
+const Dia = styled.div`
+    margin-right: 4px;
+    margin-top: 10px;
+h5{
+    width: 30px;
+    height: 30px;
+
+    background: ${props => props.selecionado ? "#CFCFCF" : "#ffffff"};
+    border: 1px solid ${props => props.selecionado ? "#CFCFCF" : "#D5D5D5"};
+    border-radius: 5px;
+
+    font-size: 19.976px;
+    line-height: 25px;
+    text-align: center;
+    
+    color: ${props => props.selecionado ? "#ffffff" : "#DBDBDB"};
+}
+`
 const Semana = styled.div`
 h5{
     width: 30px;
@@ -127,19 +170,65 @@ flex-wrap: wrap;
 align-items: center;
 margin: 20px 18px 10px 18px;
 width: calc(34000%/375);
+min-width: 340px;
+max-width: 500px;
 height: 180px;
 background: #FFFFFF;
 border-radius: 5px;
+position: relative;
 form{
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    margin-left: 19px;
+}
+form input{
+    margin-bottom: 10px;
+    width: 303px;
+    height: 45px;
+    background: #FFFFFF;
+    border: 1px solid #D5D5D5;
+    border-radius: 5px;
+}
+form input::placeholder{
+    font-size: 19.976px;
+    line-height: 25px;
+    color: #DBDBDB;
+}
+form span{
+    position: absolute;
+    bottom: 23px;
+    right: 123px;
+    margin-right: 23px;
+    font-size: 15.976px;
+    line-height: 20px;
+    text-align: center;
+
+    color: #52B6FF;
+}
+form button{
+    position: absolute;
+    bottom: 15px;
+    right: 16px;
+    width: 84px;
+    height: 35px;
+    background: #52B6FF;
+    border-radius: 4.63636px;
+    border: none;
+
+    font-size: 15.976px;
+    line-height: 20px;
+    text-align: center;
+
+    color: #FFFFFF;
 }
 form div{
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
     justify-content: start;
+    width: 246px;
+
 }
 `
 
@@ -171,17 +260,20 @@ ion-icon{
     font-size: 20px;
     color: #666666;
 }
-div{
+article{
+    margin-top: 10px;
+    margin-left: 15px;
+    width: 30px;
+    height: 30px;
     display: flex;
-    align-items: center;
     flex-wrap: nowrap;
 }
 `
 
-
 const Habitos = styled.div`
 width: 100vw;
 margin-top: 98px;
+margin-bottom: 91px;
 display: flex;
 align-items: center;
 flex-wrap: wrap;
