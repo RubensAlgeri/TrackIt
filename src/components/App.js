@@ -14,12 +14,13 @@ import TelaHistorico from "./TelaHistorico"
 
 export default function App(){
 	const [userData, setUserData] = React.useState([])
+	const [porcentagem, setPorcentagem] = React.useState(0);
     return(
         <>
 		<Reset />
         <Style />
 			<BrowserRouter>
-				<UserContext.Provider value={{ userData, setUserData }}>
+				<UserContext.Provider value={{ userData, setUserData, porcentagem, setPorcentagem}}>
 					<Routes>
 						<Route path="/" element={<TelaLogin />} />
 						<Route path="/cadastro" element={<TelaCadastro />} />

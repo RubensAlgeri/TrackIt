@@ -11,22 +11,25 @@ import Rodape from "./Rodape";
 
 export default function TelaHoje() {
     const DataHoje = dayjs().locale('pt-br').format('dddd, DD/MM')[0].toUpperCase() + dayjs().locale('pt-br').format('dddd, DD/MM').slice(1).replace("-feira", "");
-    const { state } = useLocation()
-    console.log("habitos", state)
+    // const { state } = useLocation()
+    // console.log("habitos", state)
     const setUserData = useContext(UserContext).setUserData
-    const { data, token } = state;
+    const userData = useContext(UserContext).userData
+    const setPorcentagem = useContext(UserContext).setPorcentagem
+    const porcentagem = useContext(UserContext).porcentagem
+    const { data, token } = userData;
     const { image } = data;
     console.log("token ", token)
 
 
     const [listaHabitosHoje, setListaHabitosHoje] = useState([])
     const [habitosCompletos, setHabitosCompletos] = useState(0)
-    const [porcentagem, setPorcentagem] = useState(habitosCompletos / listaHabitosHoje.length * 100)
+    // const [porcentagem, setPorcentagem] = useState(habitosCompletos / listaHabitosHoje.length * 100)
 
-
+    setPorcentagem(Math.round(habitosCompletos / listaHabitosHoje.length * 100))
 
     useEffect(() => {
-        setUserData(state)
+        // setUserData(state)
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -162,6 +165,7 @@ ion-icon{
 const HabitosHoje = styled.div`
 width: 100vw;
 margin-top: 98px;
+margin-bottom: 101px;
 display: flex;
 align-items: center;
 flex-wrap: wrap;

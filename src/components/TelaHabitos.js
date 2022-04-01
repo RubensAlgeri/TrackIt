@@ -11,8 +11,8 @@ import Rodape from "./Rodape";
 export default function TelaHabitos() {
     const [listaHabitos, setListaHabitos] = useState([])
     const userData = useContext(UserContext).userData
-    const { state } = useLocation()
-    const { data, token } = state;
+    const porcentagem = useContext(UserContext).porcentagem
+    const { data, token } = userData;
     const { image } = data;
     const [dias, setDias] = useState([]);
     const [semana, setSemana] = useState([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
@@ -126,7 +126,7 @@ export default function TelaHabitos() {
                     })
                     : <em>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</em>}
             </Habitos>
-            <Rodape></Rodape>
+            <Rodape porcentagem={porcentagem}></Rodape>
         </>
     )
 }

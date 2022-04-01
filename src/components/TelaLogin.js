@@ -25,7 +25,7 @@ export default function TelaLogin(){
         promessa.then(resposta=>{
             setCarregando(false)
             setUserData({data: resposta.data, token: resposta.data.token})
-            navigate("/habitos",{
+            navigate("/hoje",{
                 state:{data: resposta.data, token: resposta.data.token},
             })
             

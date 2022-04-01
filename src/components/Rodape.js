@@ -31,7 +31,7 @@ const Footer = styled.div`
 position: relative;
 display: flex;
 align-items: center;
-justify-content: space-around;
+justify-content: space-between;
 position: fixed;
 z-index: 2;
 width: 100vw;
@@ -40,6 +40,8 @@ bottom: 0;
 
 background: #FFFFFF;
 a{
+    margin-left: 36px;
+    margin-right: 31px;
     text-decoration: none;
     font-size: 17.976px;
     line-height: 22px;
@@ -56,5 +58,8 @@ div{
     height: 91px;
 
     border-radius: 50%;
+}
+div a{
+    margin: 0;
 }
 `
