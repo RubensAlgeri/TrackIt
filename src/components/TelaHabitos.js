@@ -2,6 +2,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useLocation } from "react-router-dom"
 import { useState, useEffect, useContext } from 'react';
+import {ThreeDots} from "react-loader-spinner"
 import dayjs from 'dayjs';
 
 import UserContext from "../contexts/UserContext";
@@ -19,6 +20,7 @@ export default function TelaHabitos() {
 
     const [criarHabito, setCriarHabito] = useState(false)
     const [nomeHabito, setNomeHabito] = useState('')
+    const [carregando, setCarregando] = useState(false)
     useEffect(() => {
         const config = {
             headers: {
@@ -34,26 +36,29 @@ export default function TelaHabitos() {
 
     function criarHabitos(event) {
         event.preventDefault();
+        setCarregando(true)
 
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-        if(dias.length>0){
-        const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, { name: nomeHabito, days: dias }, config)
-        promessa.then(() => {
-            const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
-            promise.then((resposta) => {
-                setCriarHabito(false)
-                setDias([])
-                setNomeHabito("")
-                setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
-                setListaHabitos(resposta.data);
+        if (dias.length > 0) {
+            const promessa = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, { name: nomeHabito, days: dias }, config)
+            promessa.then(() => {
+                const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
+                promise.then((resposta) => {
+                    setCriarHabito(false)
+                    setCarregando(false)
+                    setDias([])
+                    setNomeHabito("")
+                    setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
+                    setListaHabitos(resposta.data);
+                })
+                setCarregando(false)
+                promise.catch(() => { alert('Erro, tente novamente mais tarde') })
             })
-            promise.catch(() => { alert('Erro, tente novamente mais tarde') })
-        })
-    }else{alert("Selecione ao menos um dia da semana para aplicar o hábito")}
+        } else { alert("Selecione ao menos um dia da semana para aplicar o hábito") }
     }
 
     function selecioneiDia(numero, selecionado) {
@@ -80,7 +85,7 @@ export default function TelaHabitos() {
             promise.catch(() => { alert('Erro, tente novamente mais tarde') })
         })
     }
-    function cancelar(){
+    function cancelar() {
         setCriarHabito(false)
         setDias([])
         setNomeHabito("")
@@ -96,20 +101,37 @@ export default function TelaHabitos() {
                     <small onClick={() => setCriarHabito(true)}>+</small>
                     {criarHabito ?
                         <Criacao>
-                            <form onSubmit={criarHabitos}>
-                                <input type='text' placeholder='nome do hábito' value={nomeHabito} onChange={(e) => setNomeHabito(e.target.value)} required></input>
-                                <div>
-                                    {semana.map(dia => {
-                                        return (
-                                            <Semana selecionado={dia.selecionado}>
-                                                <h5 onClick={() => selecioneiDia(dia.numero, !dia.selecionado)}>{dia.dia}</h5>
-                                            </Semana>
-                                        )
-                                    })}
-                                </div>
-                                <span onClick={cancelar}>Cancelar</span>
-                                <button type="submit">Salvar</button>
-                            </form>
+                            {carregando ?
+                                <form onSubmit={criarHabitos}>
+                                    <input disabled type='text' placeholder='nome do hábito' value={nomeHabito} ></input>
+                                    <div>
+                                        {semana.map(dia => {
+                                            return (
+                                                <Semana selecionado={dia.selecionado}>
+                                                    <h5 >{dia.dia}</h5>
+                                                </Semana>
+                                            )
+                                        })}
+                                    </div>
+                                    <span >Cancelar</span>
+                                    <button disabled><ThreeDots color="#FFFFFF" height={11} width={43}/></button>
+                                </form>
+                                :
+                                <form onSubmit={criarHabitos}>
+                                    <input type='text' placeholder='nome do hábito' value={nomeHabito} onChange={(e) => setNomeHabito(e.target.value)} required></input>
+                                    <div>
+                                        {semana.map(dia => {
+                                            return (
+                                                <Semana selecionado={dia.selecionado}>
+                                                    <h5 onClick={() => selecioneiDia(dia.numero, !dia.selecionado)}>{dia.dia}</h5>
+                                                </Semana>
+                                            )
+                                        })}
+                                    </div>
+                                    <span onClick={cancelar}>Cancelar</span>
+                                    <button type="submit">Salvar</button>
+                                </form>
+                            }
                         </Criacao>
                         :
                         <></>
@@ -205,6 +227,9 @@ form input::placeholder{
     line-height: 25px;
     color: #DBDBDB;
 }
+form input:disabled{
+    background: #F2F2F2;
+}
 form span{
     position: absolute;
     bottom: 23px;
@@ -231,6 +256,10 @@ form button{
     text-align: center;
 
     color: #FFFFFF;
+}
+form button:disabled{
+    opacity: 0.7;
+    padding: auto;
 }
 form div{
     display: flex;
