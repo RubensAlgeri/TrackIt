@@ -30,6 +30,7 @@ export default function TelaLogin(){
         })
         promessa.catch(err=>{
             setCarregando(false)
+            alert(`deu ruim, ${err.response.data.message}`)
         })
     }
 

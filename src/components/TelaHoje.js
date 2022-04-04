@@ -37,7 +37,7 @@ export default function TelaHoje() {
             setListaHabitosHoje(resposta.data);
             setHabitosCompletos(resposta.data.filter(habito => { return habito.done }).length)
         })
-        promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+        promise.catch((err) => { alert(`deu ruim, ${err.response.data.message}`) })
     }, []);
 
     function atualizarHabito(status, id) {
@@ -55,7 +55,7 @@ export default function TelaHoje() {
                     setListaHabitosHoje(resposta.data);
                     setHabitosCompletos(resposta.data.filter(habito => { return habito.done }).length)
                 })
-                promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+                promise.catch((err) => { alert(`deu ruim, ${err.response.data.message}`) })
 
             })
             promessa.catch(err => {
@@ -70,7 +70,7 @@ export default function TelaHoje() {
                     setListaHabitosHoje(resposta.data);
                     setHabitosCompletos(resposta.data.filter(habito => { return habito.done }).length)
                 })
-                promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+                promise.catch((err) => { alert(`deu ruim, ${err.response.data.message}`) })
             })
             promessas.catch(err => {
                 alert(err.response.data.message)

@@ -31,7 +31,7 @@ export default function TelaHabitos() {
         promise.then((resposta) => {
             setListaHabitos(resposta.data);
         })
-        promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+        promise.catch((err) => { alert(`deu ruim, ${err.response.data.message}`)})
     }, []);
 
     function criarHabitos(event) {
@@ -55,10 +55,16 @@ export default function TelaHabitos() {
                     setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
                     setListaHabitos(resposta.data);
                 })
-                setCarregando(false)
-                promise.catch(() => { alert('Erro, tente novamente mais tarde') })
+                promise.catch((err) => { 
+                    setCarregando(false)
+                    alert(`deu ruim, ${err.response.data.message}`); })
             })
-        } else { alert("Selecione ao menos um dia da semana para aplicar o hábito") }
+            promessa.catch(err=>{
+                setCarregando(false)
+                alert(`deu ruim, ${err.response.data.message}`)})
+        } else { 
+            setCarregando(false)
+            alert("Selecione ao menos um dia da semana para aplicar o hábito") }
     }
 
     function selecioneiDia(numero, selecionado) {
@@ -76,21 +82,20 @@ export default function TelaHabitos() {
                 Authorization: `Bearer ${token}`
             }
         }
-        const promessa = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idHabito}`, config)
-        promessa.then(() => {
-            const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
-            promise.then((resposta) => {
-                setListaHabitos(resposta.data);
+        if(window.confirm("Você quer mesmo deletar este hábito?")==true){
+            const promessa = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idHabito}`, config)
+            promessa.then(() => {
+                const promise = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, config)
+                promise.then((resposta) => {
+                    setListaHabitos(resposta.data);
+                })
+                promise.catch((err) => { alert(`deu ruim, ${err.response.data.message}`) })
             })
-            promise.catch(() => { alert('Erro, tente novamente mais tarde') })
-        })
+        }
     }
     function cancelar() {
         setCriarHabito(false)
-        setDias([])
-        setNomeHabito("")
-        setSemana([{ dia: "D", numero: 0 }, { dia: "S", numero: 1 }, { dia: "T", numero: 2 }, { dia: "Q", numero: 3 }, { dia: "Q", numero: 4 }, { dia: "S", numero: 5 }, { dia: "S", numero: 6 }])
-    }
+        }
 
     return (
         <>
